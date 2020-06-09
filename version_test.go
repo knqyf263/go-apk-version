@@ -78,3 +78,20 @@ func TestVersion_Compare(t *testing.T) {
 		})
 	}
 }
+
+func TestVersion_CompareMultipleTimes(t *testing.T) {
+	a, _ := NewVersion("1.2.3")
+	b, _ := NewVersion("1.2.3")
+
+	got := a.Compare(b)
+	assert.Equal(t, 0, got)
+
+	b, _ = NewVersion("1.2.3_pre1")
+	got = a.Compare(b)
+	assert.True(t, got > 0)
+
+	b, _ = NewVersion("1.2.3-r1")
+	got = a.Compare(b)
+	assert.True(t, got < 0)
+}
+
