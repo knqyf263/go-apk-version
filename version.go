@@ -23,23 +23,26 @@ const (
 
 // Version represents a package version
 // ref. https://gitlab.alpinelinux.org/alpine/apk-tools/-/blob/master/src/version.c
-type Version bufio.Reader
+type Version string
+
+type version bufio.Reader
 
 // NewVersion returns a parsed version
 func NewVersion(ver string) (Version, error) {
 	if !Valid(ver) {
-		return Version{}, errors.New("invalid version")
+		// Even if a version is invalid, a caller needs to be able to do sort.
+		return Version(ver), errors.New("invalid version")
 	}
-	return newVersion(ver), nil
+	return Version(ver), nil
 }
 
-func newVersion(ver string) Version {
+func newVersion(ver string) version {
 	s := strings.NewReader(ver)
 	b := bufio.NewReader(s)
-	return Version(*b)
+	return version(*b)
 }
 
-func (v1 *Version) nextToken(tokenType parts) parts {
+func (v1 *version) nextToken(tokenType parts) parts {
 	n := tokenInvalid
 
 	v := (*bufio.Reader)(v1)
@@ -98,7 +101,7 @@ var (
 	postSuffixes = [5]string{"cvs", "svn", "git", "hg", "p"}
 )
 
-func (v1 *Version) getToken(tokenType parts) (int, parts, error) {
+func (v1 *version) getToken(tokenType parts) (int, parts, error) {
 	nt := tokenInvalid
 	var value int
 
@@ -240,7 +243,10 @@ func (v1 Version) Compare(v2 Version) int {
 	return compare(v1, v2)
 }
 
-func compare(v1, v2 Version) int {
+func compare(ver1, ver2 Version) int {
+	v1 := newVersion(string(ver1))
+	v2 := newVersion(string(ver2))
+
 	at := tokenDigit
 	bt := tokenDigit
 
