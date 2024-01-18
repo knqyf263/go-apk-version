@@ -34,6 +34,10 @@ func TestNewVersion(t *testing.T) {
 			ver:  "1.0b",
 		},
 		{
+			name: "happy path pre suffix b",
+			ver:  "1.0.0_b1",
+		},
+		{
 			name:    "sad path",
 			ver:     "1.0bc",
 			wantErr: true,

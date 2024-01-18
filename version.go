@@ -97,7 +97,7 @@ func (v1 *version) nextToken(tokenType parts) parts {
 }
 
 var (
-	preSuffixes  = [4]string{"alpha", "beta", "pre", "rc"}
+	preSuffixes  = [5]string{"alpha", "beta", "pre", "rc", "b"}
 	postSuffixes = [5]string{"cvs", "svn", "git", "hg", "p"}
 )
 
